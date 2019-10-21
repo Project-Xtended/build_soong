@@ -62,7 +62,7 @@ var combineApk = pctx.AndroidStaticRule("combineApk",
 		CommandDeps: []string{"${config.MergeZipsCmd}"},
 	})
 
-func CreateAppPackage(ctx android.ModuleContext, outputFile android.WritablePath,
+func CreateAndSignAppPackage(ctx android.ModuleContext, outputFile android.WritablePath,
 	packageFile, jniJarFile, dexJarFile android.Path, certificates []Certificate) {
 
 	unsignedApkName := strings.TrimSuffix(outputFile.Base(), ".apk") + "-unsigned.apk"
@@ -83,7 +83,12 @@ func CreateAppPackage(ctx android.ModuleContext, outputFile android.WritablePath
 		Output: unsignedApk,
 	})
 
-	var certificateArgs []string
+SignAppPackage(ctx, outputFile, unsignedApk, certificates)
+}
+
+func SignAppPackage(ctx android.ModuleContext, signedApk android.WritablePath, unsignedApk android.Path, certificates []Certificate) {	
+
+    var certificateArgs []string
 	var deps android.Paths
 	for _, c := range certificates {
 		certificateArgs = append(certificateArgs, c.Pem.String(), c.Key.String())
@@ -93,7 +98,7 @@ func CreateAppPackage(ctx android.ModuleContext, outputFile android.WritablePath
 	ctx.Build(pctx, android.BuildParams{
 		Rule:        Signapk,
 		Description: "signapk",
-		Output:      outputFile,
+		Output:      signedApk,
 		Input:       unsignedApk,
 		Implicits:   deps,
 		Args: map[string]string{

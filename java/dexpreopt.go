@@ -22,11 +22,12 @@ import (
 type dexpreopter struct {
 	dexpreoptProperties DexpreoptProperties
 
-	installPath     android.OutputPath
-	uncompressedDex bool
-	isSDKLibrary    bool
-	isTest          bool
-	isInstallable   bool
+	installPath         android.OutputPath
+	uncompressedDex     bool
+	isSDKLibrary        bool
+	isTest              bool
+	isInstallable       bool
+	isPresignedPrebuilt bool
 
 	builtInstalled string
 }
@@ -177,7 +178,9 @@ func (d *dexpreopter) dexpreopt(ctx android.ModuleContext, dexJarFile android.Mo
 		NoCreateAppImage:    !BoolDefault(d.dexpreoptProperties.Dex_preopt.App_image, true),
 		ForceCreateAppImage: BoolDefault(d.dexpreoptProperties.Dex_preopt.App_image, false),
 
-		NoStripping:     Bool(d.dexpreoptProperties.Dex_preopt.No_stripping),
+		PresignedPrebuilt: d.isPresignedPrebuilt,
+
+        NoStripping:     Bool(d.dexpreoptProperties.Dex_preopt.No_stripping),
 		StripInputPath:  dexJarFile,
 		StripOutputPath: strippedDexJarFile.OutputPath,
 	}

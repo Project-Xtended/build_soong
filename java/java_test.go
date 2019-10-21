@@ -63,7 +63,8 @@ func testContext(config android.Config, bp string,
 	ctx := android.NewTestArchContext()
 	ctx.RegisterModuleType("android_app", android.ModuleFactoryAdaptor(AndroidAppFactory))
 	ctx.RegisterModuleType("android_app_certificate", android.ModuleFactoryAdaptor(AndroidAppCertificateFactory))
-	ctx.RegisterModuleType("android_library", android.ModuleFactoryAdaptor(AndroidLibraryFactory))
+	ctx.RegisterModuleType("android_app_import", android.ModuleFactoryAdaptor(AndroidAppImportFactory))
+    ctx.RegisterModuleType("android_library", android.ModuleFactoryAdaptor(AndroidLibraryFactory))
 	ctx.RegisterModuleType("android_test", android.ModuleFactoryAdaptor(AndroidTestFactory))
 	ctx.RegisterModuleType("android_test_helper_app", android.ModuleFactoryAdaptor(AndroidTestHelperAppFactory))
 	ctx.RegisterModuleType("java_binary", android.ModuleFactoryAdaptor(BinaryFactory))
@@ -167,7 +168,9 @@ func testContext(config android.Config, bp string,
 		"prebuilts/sdk/tools/core-lambda-stubs.jar":   nil,
 		"prebuilts/sdk/Android.bp":                    []byte(`prebuilt_apis { name: "sdk", api_dirs: ["14", "28", "current"],}`),
 
-		// For framework-res, which is an implicit dependency for framework
+		"prebuilts/apk/app.apk": nil,
+
+        // For framework-res, which is an implicit dependency for framework
 		"AndroidManifest.xml":                   nil,
 		"build/target/product/security/testkey": nil,
 
